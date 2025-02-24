@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 import SwiftUI
+import simd
 
 class CircleController: UIViewController {
     
-    var position: CGPoint
-    var newPosition: CGPoint
+    var position: simd_float2
     var size: CGSize
     var directionAngle: CGFloat = 3 * .pi / 2
     var distance: CGFloat = 0
@@ -26,13 +26,15 @@ class CircleController: UIViewController {
     var smallCircle: UIView
     var smallCircleL: UIView
     var smallCircleR: UIView
+    
+    var joystick: JoystickView
       
     
-    init(position: CGPoint, size: CGSize) {
+    init(position: simd_float2, size: CGSize, joystick: JoystickView) {
         self.position = position
-        self.newPosition = position
         self.size = size
         self.distance = size.width
+        self.joystick = joystick
         
         self.circle = UIHostingController(rootView: CircleView()).view
         self.smallCircle = UIHostingController(rootView: CircleView()).view
@@ -52,11 +54,19 @@ class CircleController: UIViewController {
         setupViewCode()
     }
     
+  
+    
     func update(_ deltaTime: TimeInterval) {
         drawline()
         
-        self.position = newPosition
-        circle.layer.position = self.position
+        if joystick.direction.angle() != 0{
+            self.directionAngle = joystick.direction.angle()
+        }
+        
+        self.position.x += joystick.direction.x
+        self.position.y += -joystick.direction.y
+        circle.layer.position = self.position.toCgPoint()
+        
     }
     
     func drawline(){
@@ -69,19 +79,19 @@ class CircleController: UIViewController {
         let pathR = UIBezierPath()
         
         //initiating the line
-        path.move(to: position)
-        pathL.move(to: position)
-        pathR.move(to: position)
+        path.move(to: position.toCgPoint())
+        pathL.move(to: position.toCgPoint())
+        pathR.move(to: position.toCgPoint())
         
         //calculating the end x and y to know the end of the line
-        let endX = position.x + distance * cos(directionAngle)
-        let endY = position.y + distance * sin(directionAngle)
+        let endX = position.toCgPoint().x + distance * cos(directionAngle)
+        let endY = position.toCgPoint().y + distance * sin(directionAngle)
         
-        let endXL = position.x + distance * cos(directionAngle + angle45)
-        let endYL = position.y + distance * sin(directionAngle + angle45)
+        let endXL = position.toCgPoint().x + distance * cos(directionAngle + angle45)
+        let endYL = position.toCgPoint().y + distance * sin(directionAngle + angle45)
         
-        let endXR = position.x + distance * cos(directionAngle - angle45)
-        let endYR = position.y + distance * sin(directionAngle - angle45)
+        let endXR = position.toCgPoint().x + distance * cos(directionAngle - angle45)
+        let endYR = position.toCgPoint().y + distance * sin(directionAngle - angle45)
         
         path.addLine(to: CGPoint(x: endX, y: endY))
         pathL.addLine(to: CGPoint(x: endXL, y: endYL))
@@ -116,7 +126,7 @@ extension CircleController: ViewCode{
     }
     
     func setupStyle() {
-        circle.frame = CGRect(origin: position, size: size)
+        circle.frame = CGRect(origin: position.toCgPoint(), size: size)
         circle.layer.cornerRadius = size.width / 2
         
         let sSize = CGSize(width: 40, height: 40)
