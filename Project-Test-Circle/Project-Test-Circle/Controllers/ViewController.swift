@@ -12,7 +12,7 @@ class ViewController: UIViewController, Updateable {
     
     var timerToUpdate: Timer?
     var deltaTime: TimeInterval = 1/60
-    var circle: CircleController?
+    var circle: HeadSnakeController?
     var joystick: JoystickView?
     
     var countToUpdateAngle: Int = 0
@@ -26,7 +26,7 @@ class ViewController: UIViewController, Updateable {
         joystick = JoystickView(size: CGSize(width: 100, height: 100))
    
         if let joystick = joystick{
-            circle = CircleController(position: position, size: size, joystick: joystick)
+            circle = HeadSnakeController(position: position, size: size, joystick: joystick.direction)
         }
         
         setupViewCode()
@@ -86,6 +86,8 @@ extension ViewController: ViewCode {
     }
     
     func update(_ deltaTime: TimeInterval) {
+        
         circle?.update(deltaTime)
+        circle?.controllerJoystick = joystick?.direction ?? .zero
     }
 }

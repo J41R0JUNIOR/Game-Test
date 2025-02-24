@@ -10,13 +10,11 @@ import UIKit
 import SwiftUI
 import simd
 
-class CircleController: UIViewController {
-    
+class HeadSnakeController: UIViewController {
     var position: simd_float2
     var size: CGSize
     var directionAngle: CGFloat = 3 * .pi / 2
     var distance: CGFloat = 0
-    
     
     var line = CAShapeLayer()
     var lineL = CAShapeLayer()
@@ -27,14 +25,16 @@ class CircleController: UIViewController {
     var smallCircleL: UIView
     var smallCircleR: UIView
     
-    var joystick: JoystickView
+    var controllerJoystick: simd_float2
+    
+    var body: BodyView?
       
     
-    init(position: simd_float2, size: CGSize, joystick: JoystickView) {
+    init(position: simd_float2, size: CGSize, joystick: simd_float2) {
         self.position = position
         self.size = size
         self.distance = size.width
-        self.joystick = joystick
+        self.controllerJoystick = joystick
         
         self.circle = UIView()
         self.smallCircle = UIView()
@@ -59,12 +59,12 @@ class CircleController: UIViewController {
     func update(_ deltaTime: TimeInterval) {
         drawline()
         
-        if joystick.direction.angle() != 0{
-            self.directionAngle = joystick.direction.angle()
+        if controllerJoystick.angle() != 0{
+            self.directionAngle = controllerJoystick.angle()
         }
         
-        self.position.x += joystick.direction.x
-        self.position.y += -joystick.direction.y
+        self.position.x += controllerJoystick.x
+        self.position.y += -controllerJoystick.y
         circle.layer.position = self.position.toCgPoint()
         
     }
@@ -74,14 +74,14 @@ class CircleController: UIViewController {
         let angle45: CGFloat = .pi / 4
         
 //        //initiating the path
-//        let path = UIBezierPath()
-//        let pathL = UIBezierPath()
-//        let pathR = UIBezierPath()
-//        
-//        //initiating the line
-//        path.move(to: position.toCgPoint())
-//        pathL.move(to: position.toCgPoint())
-//        pathR.move(to: position.toCgPoint())
+        let path = UIBezierPath()
+        let pathL = UIBezierPath()
+        let pathR = UIBezierPath()
+        
+        //initiating the line
+        path.move(to: position.toCgPoint())
+        pathL.move(to: position.toCgPoint())
+        pathR.move(to: position.toCgPoint())
         
         //calculating the end x and y to know the end of the line
         let endX = position.toCgPoint().x + distance * cos(directionAngle)
@@ -93,20 +93,20 @@ class CircleController: UIViewController {
         let endXR = position.toCgPoint().x + distance * cos(directionAngle - angle45)
         let endYR = position.toCgPoint().y + distance * sin(directionAngle - angle45)
         
-//        path.addLine(to: CGPoint(x: endX, y: endY))
-//        pathL.addLine(to: CGPoint(x: endXL, y: endYL))
-//        pathR.addLine(to: CGPoint(x: endXR, y: endYR))
-//
-//        //setting path
-//        line.path = path.cgPath
-//        line.strokeColor = UIColor.blue.cgColor
-//        line.lineWidth = 10
-//        
-//        lineL.path = pathL.cgPath
-//        lineL.strokeColor = UIColor.blue.cgColor
-//        
-//        lineR.path = pathR.cgPath
-//        lineR.strokeColor = UIColor.blue.cgColor
+        path.addLine(to: CGPoint(x: endX, y: endY))
+        pathL.addLine(to: CGPoint(x: endXL, y: endYL))
+        pathR.addLine(to: CGPoint(x: endXR, y: endYR))
+
+        //setting path
+        line.path = path.cgPath
+        line.strokeColor = UIColor.red.cgColor
+        line.lineWidth = 5
+        
+        lineL.path = pathL.cgPath
+        lineL.strokeColor = UIColor.red.cgColor
+        
+        lineR.path = pathR.cgPath
+        lineR.strokeColor = UIColor.red.cgColor
         
         
         smallCircle.layer.position = CGPoint(x: endX, y: endY)
@@ -115,9 +115,15 @@ class CircleController: UIViewController {
     }
 }
 
-extension CircleController: ViewCode{
+extension HeadSnakeController: ViewCode{
     func addViews() {
+        
+        view.layer.addSublayer(line)
+        view.layer.addSublayer(lineL)
+        view.layer.addSublayer(lineR)
+        
         addListSubviews(circle, smallCircle, smallCircleL, smallCircleR)
+        
     }
     
     func addConstraints() {
