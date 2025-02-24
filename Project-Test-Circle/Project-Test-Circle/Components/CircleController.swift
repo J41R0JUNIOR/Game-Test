@@ -36,10 +36,10 @@ class CircleController: UIViewController {
         self.distance = size.width
         self.joystick = joystick
         
-        self.circle = UIHostingController(rootView: CircleView()).view
-        self.smallCircle = UIHostingController(rootView: CircleView()).view
-        self.smallCircleL = UIHostingController(rootView: CircleView()).view
-        self.smallCircleR = UIHostingController(rootView: CircleView()).view
+        self.circle = UIView()
+        self.smallCircle = UIView()
+        self.smallCircleL = UIView()
+        self.smallCircleR = UIView()
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -54,7 +54,7 @@ class CircleController: UIViewController {
         setupViewCode()
     }
     
-  
+    
     
     func update(_ deltaTime: TimeInterval) {
         drawline()
@@ -73,15 +73,15 @@ class CircleController: UIViewController {
         //constant of angle 45
         let angle45: CGFloat = .pi / 4
         
-        //initiating the path
-        let path = UIBezierPath()
-        let pathL = UIBezierPath()
-        let pathR = UIBezierPath()
-        
-        //initiating the line
-        path.move(to: position.toCgPoint())
-        pathL.move(to: position.toCgPoint())
-        pathR.move(to: position.toCgPoint())
+//        //initiating the path
+//        let path = UIBezierPath()
+//        let pathL = UIBezierPath()
+//        let pathR = UIBezierPath()
+//        
+//        //initiating the line
+//        path.move(to: position.toCgPoint())
+//        pathL.move(to: position.toCgPoint())
+//        pathR.move(to: position.toCgPoint())
         
         //calculating the end x and y to know the end of the line
         let endX = position.toCgPoint().x + distance * cos(directionAngle)
@@ -93,20 +93,20 @@ class CircleController: UIViewController {
         let endXR = position.toCgPoint().x + distance * cos(directionAngle - angle45)
         let endYR = position.toCgPoint().y + distance * sin(directionAngle - angle45)
         
-        path.addLine(to: CGPoint(x: endX, y: endY))
-        pathL.addLine(to: CGPoint(x: endXL, y: endYL))
-        pathR.addLine(to: CGPoint(x: endXR, y: endYR))
-
-        //setting path
-        line.path = path.cgPath
-        line.strokeColor = UIColor.blue.cgColor
-        line.lineWidth = 10
-        
-        lineL.path = pathL.cgPath
-        lineL.strokeColor = UIColor.blue.cgColor
-        
-        lineR.path = pathR.cgPath
-        lineR.strokeColor = UIColor.blue.cgColor
+//        path.addLine(to: CGPoint(x: endX, y: endY))
+//        pathL.addLine(to: CGPoint(x: endXL, y: endYL))
+//        pathR.addLine(to: CGPoint(x: endXR, y: endYR))
+//
+//        //setting path
+//        line.path = path.cgPath
+//        line.strokeColor = UIColor.blue.cgColor
+//        line.lineWidth = 10
+//        
+//        lineL.path = pathL.cgPath
+//        lineL.strokeColor = UIColor.blue.cgColor
+//        
+//        lineR.path = pathR.cgPath
+//        lineR.strokeColor = UIColor.blue.cgColor
         
         
         smallCircle.layer.position = CGPoint(x: endX, y: endY)
@@ -118,7 +118,6 @@ class CircleController: UIViewController {
 extension CircleController: ViewCode{
     func addViews() {
         addListSubviews(circle, smallCircle, smallCircleL, smallCircleR)
-//        addListSubviews(line, lineL, lineR)
     }
     
     func addConstraints() {
@@ -128,15 +127,19 @@ extension CircleController: ViewCode{
     func setupStyle() {
         circle.frame = CGRect(origin: position.toCgPoint(), size: size)
         circle.layer.cornerRadius = size.width / 2
+        circle.backgroundColor = .red
         
-        let sSize = CGSize(width: 40, height: 40)
+        let sSize = CGSize(width: 50, height: 50)
         smallCircle.frame = CGRect(origin: .zero, size: sSize)
         smallCircle.layer.cornerRadius = size.width / 2
+        smallCircle.backgroundColor = .red
         
         smallCircleL.frame = CGRect(origin: .zero, size: sSize)
         smallCircleL.layer.cornerRadius = size.width / 2
+        smallCircleL.backgroundColor = .red
         
         smallCircleR.frame = CGRect(origin: .zero, size: sSize)
         smallCircleR.layer.cornerRadius = size.width / 2
+        smallCircleR.backgroundColor = .red
     }
 }

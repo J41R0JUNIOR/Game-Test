@@ -24,9 +24,7 @@ class ViewController: UIViewController, Updateable {
         let position = CGPoint(x: (view.frame.width - size.width) / 2, y: (view.frame.height - size.height) / 2).toSimdFloat2()
         
         joystick = JoystickView(size: CGSize(width: 100, height: 100))
-        joystick?.view.layer.borderColor = UIColor.white.cgColor
-        joystick?.view.layer.borderWidth = 1
-        
+   
         if let joystick = joystick{
             circle = CircleController(position: position, size: size, joystick: joystick)
         }

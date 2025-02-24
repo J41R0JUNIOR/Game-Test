@@ -37,7 +37,6 @@ class JoystickView: UIViewController, Updateable, ViewCode {
     
     override func viewDidLoad() {
         self.position = CGPoint(x: view.frame.origin.x + size.width * 0.5 , y: view.frame.origin.y + size.height * 0.5)
-//        self.position = background.center
      
     }
     
@@ -64,7 +63,6 @@ class JoystickView: UIViewController, Updateable, ViewCode {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.position = background.layer.position
-        
     }
     
     func addViews() {
