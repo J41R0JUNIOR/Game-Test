@@ -63,10 +63,25 @@ class HeadSnakeController: UIViewController {
             self.directionAngle = controllerJoystick.angle()
         }
         
-        self.position.x += controllerJoystick.x
-        self.position.y += -controllerJoystick.y
+        
+        
+//        manualControl()
+        autoControl()
+        
         circle.layer.position = self.position.toCgPoint()
         
+      
+        
+    }
+    
+    func manualControl(){
+        self.position.x += controllerJoystick.x
+        self.position.y += -controllerJoystick.y
+    }
+    
+    func autoControl(){
+        self.position.x += Float(cos(directionAngle))
+        self.position.y += Float(sin(directionAngle))
     }
     
     func drawline(){
@@ -135,17 +150,20 @@ extension HeadSnakeController: ViewCode{
         circle.layer.cornerRadius = size.width / 2
         circle.backgroundColor = .red
         
-        let sSize = CGSize(width: 50, height: 50)
+        let sSize = CGSize(width: 25, height: 25)
+        
+
         smallCircle.frame = CGRect(origin: .zero, size: sSize)
-        smallCircle.layer.cornerRadius = size.width / 2
+        smallCircle.layer.cornerRadius = sSize.width / 2
         smallCircle.backgroundColor = .red
-        
+
         smallCircleL.frame = CGRect(origin: .zero, size: sSize)
-        smallCircleL.layer.cornerRadius = size.width / 2
+        smallCircleL.layer.cornerRadius = sSize.width / 2
         smallCircleL.backgroundColor = .red
-        
+
         smallCircleR.frame = CGRect(origin: .zero, size: sSize)
-        smallCircleR.layer.cornerRadius = size.width / 2
+        smallCircleR.layer.cornerRadius = sSize.width / 2
         smallCircleR.backgroundColor = .red
+
     }
 }

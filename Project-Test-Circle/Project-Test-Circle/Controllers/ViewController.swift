@@ -11,7 +11,7 @@ import SwiftUI
 class ViewController: UIViewController, Updateable {
     
     var timerToUpdate: Timer?
-    var deltaTime: TimeInterval = 1/60
+    var deltaTime: TimeInterval = 1/15
     var circle: HeadSnakeController?
     var joystick: JoystickView?
     
@@ -20,7 +20,7 @@ class ViewController: UIViewController, Updateable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let size = CGSize(width: 100, height: 100)
+        let size = CGSize(width: 50, height: 50)
         let position = CGPoint(x: (view.frame.width - size.width) / 2, y: (view.frame.height - size.height) / 2).toSimdFloat2()
         
         joystick = JoystickView(size: CGSize(width: 100, height: 100))
