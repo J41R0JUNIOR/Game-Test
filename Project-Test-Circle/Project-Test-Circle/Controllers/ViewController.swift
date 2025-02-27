@@ -7,27 +7,37 @@
 
 import UIKit
 import SwiftUI
+import MetalKit
 
 class ViewController: UIViewController, Updateable {
-    
+ 
     var timerToUpdate: Timer?
-    var deltaTime: TimeInterval = 1/15
+    var deltaTime: TimeInterval = 1/30
     var circle: HeadSnakeController?
     var joystick: JoystickView?
     
     var countToUpdateAngle: Int = 0
     
+    var device: MTLDevice!
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        self.device = MTLCreateSystemDefaultDevice()!
+        
+        let metalView = MTKView(frame: self.view.bounds, device: device)
+        metalView.delegate = self
+//        view = metalView
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
+        
+        
         super.viewDidLoad()
         
-        let size = CGSize(width: 50, height: 50)
-        let position = CGPoint(x: (view.frame.width - size.width) / 2, y: (view.frame.height - size.height) / 2).toSimdFloat2()
-        
-        joystick = JoystickView(size: CGSize(width: 100, height: 100))
-   
-        if let joystick = joystick{
-            circle = HeadSnakeController(position: position, size: size, joystick: joystick.direction)
-        }
         
         setupViewCode()
         
@@ -82,12 +92,29 @@ extension ViewController: ViewCode {
     }
     
     func setupStyle() {
+        let size = CGSize(width: 50, height: 50)
+        let position = CGPoint(x: (view.frame.width - size.width) / 2, y: (view.frame.height - size.height) / 2).toSimdFloat2()
         
+        joystick = JoystickView(size: CGSize(width: 100, height: 100))
+   
+        if let joystick = joystick{
+            circle = HeadSnakeController(position: position, size: size, joystick: joystick.direction)
+        }
     }
     
     func update(_ deltaTime: TimeInterval) {
         
         circle?.update(deltaTime)
         circle?.controllerJoystick = joystick?.direction ?? .zero
+    }
+}
+
+extension ViewController: MTKViewDelegate {
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        
+    }
+    
+    func draw(in view: MTKView) {
+        
     }
 }

@@ -32,8 +32,8 @@ protocol ViewCode {
 // Chama todos os métodos do protocolo
 extension ViewCode {
     func setupViewCode() {
+        setupStyle()
         addViews()
         addConstraints()
-        setupStyle()
     }
 }
