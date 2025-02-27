@@ -62,15 +62,12 @@ class HeadSnakeController: UIViewController {
         if controllerJoystick.angle() != 0{
             self.directionAngle = controllerJoystick.angle()
         }
-        
-        
+
         
 //        manualControl()
         autoControl()
         
         circle.layer.position = self.position.toCgPoint()
-        
-      
         
     }
     
